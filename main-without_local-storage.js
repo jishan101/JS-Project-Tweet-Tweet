@@ -5,10 +5,6 @@ const tweetInputElm = document.querySelector(".tweet-input");
 const tweetBtnElm = document.querySelector(".tweet-btn");
 const updateBtnElm = document.querySelector(".update-btn");
 
-const time = new Date(); //handles time
-const shownTime = time.toLocaleTimeString("En", {hour : "numeric", minute : "numeric"}); //it shows only hours and minutes
-const hiddenTime = time.toLocaleDateString("En", {day: 'numeric', month: 'long', year: 'numeric', hour : "numeric", minute : "numeric", second : "numeric"}); //it shows time and date both
-
 let tweetIdTracker = 0; //it will provide sort of unique id for the products
 const tweetList = []; //it will store the tweet with its unique id
 let passTargetParentId = ""; //it will pass the li id from editTweetFromList() to updateTweetToList() process
@@ -27,8 +23,8 @@ function noTweet() {
 noTweet();
 
 //it will add the tweet in the array as an object
-const addTweetToArray = () => {
-    tweetList.push({id : tweetIdTracker, tweet : tweetInputElm.value});
+const addTweetToArray = (shortTime, longTime) => {
+    tweetList.push({id : tweetIdTracker, tweet : tweetInputElm.value, shortTime, longTime});
 };
 
 //it will add the tweet in the ul list to show on the UI
@@ -37,14 +33,17 @@ const addTweetToList = () => {
         alert("Please enter valid input");
     } else {
         msg("");
-        addTweetToArray();
+        const time = new Date(); //handles time
+        const shownTime = time.toLocaleTimeString("En", {hour : "numeric", minute : "numeric"}); //it shows only hours and minutes
+        const hiddenTime = time.toLocaleDateString("En", {day: 'numeric', month: 'long', year: 'numeric', hour : "numeric", minute : "numeric", second : "numeric"}); //it shows time and date both
+        addTweetToArray(shownTime, hiddenTime);
 
         const serial = tweetList.findIndex(tweet => tweet.id === tweetIdTracker) + 1;
 
         const liElm = document.createElement("li");
         liElm.classList.add("list-group-item", "tweet");
         liElm.id = `tweet-${tweetIdTracker}`;
-        liElm.innerHTML = `<span>${serial}. </span><span>${tweetInputElm.value}</span><i class="fas fa-trash-alt float-end m-1 delete-btn"></i><i class="fas fa-pencil-alt float-end m-1 edit-btn"></i><i class="float-end me-2"><abbr title="${hiddenTime}" style="font-size: 8pt; display: none">${shownTime}</abbr></i>`;
+        liElm.innerHTML = `<span>${serial}. </span><span>${tweetInputElm.value}</span><i class="fas fa-trash-alt float-end m-1 delete-btn"></i><i class="fas fa-pencil-alt float-end m-1 edit-btn"></i><i class="float-end me-2"><abbr title="${hiddenTime}" style="font-size: 8pt;">${shownTime}</abbr></i>`;
         ulElm.insertAdjacentElement("beforeend", liElm);
         
         tweetInputElm.value = "";
