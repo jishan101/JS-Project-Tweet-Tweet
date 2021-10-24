@@ -10,10 +10,6 @@ if (!localStorage.getItem("tweetIdTrackerLocal")) {
 }
 let tweetIdTracker = JSON.parse(localStorage.getItem("tweetIdTrackerLocal")); //it will provide sort of unique id for the products
 
-const time = new Date(); //handles time
-const shownTime = time.toLocaleTimeString("En", {hour : "numeric", minute : "numeric"}); //it shows only hours and minutes
-const hiddenTime = time.toLocaleDateString("En", {day: 'numeric', month: 'long', year: 'numeric', hour : "numeric", minute : "numeric", second : "numeric"}); //it shows time and date both
-
 let tweetList = []; //it will store the tweet with its unique id
 let passTargetParentId = ""; //it will pass the li id from editTweetFromList() to updateTweetToList() process
 
@@ -49,15 +45,15 @@ const getDataFromLocalStorage = () => {
             const liElm = document.createElement("li");
             liElm.classList.add("list-group-item", "tweet");
             liElm.id = `tweet-${tweet.id}`;
-            liElm.innerHTML = `<span>${serial}. </span><span>${tweet.tweet}</span><i class="fas fa-trash-alt float-end m-1 delete-btn"></i><i class="fas fa-pencil-alt float-end m-1 edit-btn"></i><i class="float-end me-2"><abbr title="${hiddenTime}" style="font-size: 8pt;">${shownTime}</abbr></i>`;
+            liElm.innerHTML = `<span>${serial}. </span><span>${tweet.tweet}</span><i class="fas fa-trash-alt float-end m-1 delete-btn"></i><i class="fas fa-pencil-alt float-end m-1 edit-btn"></i><i class="float-end me-2"><abbr title="${tweet.longTime}" style="font-size: 8pt;">${tweet.shortTime}</abbr></i>`;
             ulElm.insertAdjacentElement("beforeend", liElm);
         });
     }
 };
 
 //it will add the tweet in the array as an object
-const addTweetToArray = () => {
-    tweetList.push({id : tweetIdTracker, tweet : tweetInputElm.value});
+const addTweetToArray = (shortTime, longTime) => {
+    tweetList.push({id : tweetIdTracker, tweet : tweetInputElm.value, shortTime, longTime});
     addTweetToLocalStorage();
 };
 
@@ -67,7 +63,10 @@ const addTweetToList = () => {
         alert("Please enter valid input");
     } else {
         msg("");
-        addTweetToArray();
+        const time = new Date(); //handles time
+        const shownTime = time.toLocaleTimeString("En", {hour : "numeric", minute : "numeric"}); //it shows only hours and minutes
+        const hiddenTime = time.toLocaleDateString("En", {day: 'numeric', month: 'long', year: 'numeric', hour : "numeric", minute : "numeric", second : "numeric"}); //it shows time and date both
+        addTweetToArray(shownTime, hiddenTime);
 
         const serial = tweetList.length;
 
